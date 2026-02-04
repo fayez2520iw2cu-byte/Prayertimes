@@ -24,6 +24,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # هذه هي الخطوة الجديدة السحرية
+      # ستقوم بإصلاح كل استدعاءات الملفات تلقائياً
+      - name: Auto-Fix Import Paths
+        run: |
+          # إصلاح المسارات التي تستخدم علامات تنصيص مزدوجة
+          sed -i -E 's/from ".*\/([^/"]+)"/from ".\/\1"/g' *.ts *.tsx || true
+          # إصلاح المسارات التي تستخدم علامات تنصيص فردية
+          sed -i -E "s/from '.*\/([^/']+)'/from '.\/\1'/g" *.ts *.tsx || true
+          echo "All paths have been flattened automatically."
+
       - name: Install Dependencies
         run: npm install
 
