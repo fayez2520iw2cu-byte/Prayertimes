@@ -1,0 +1,7 @@
+{
+  "name": "Copy of 10 of 8 of Noor Prayer Times",
+  "description": "A modern, beautiful prayer times application with location support, configurable calculation methods, and accurate Adhan timings.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
