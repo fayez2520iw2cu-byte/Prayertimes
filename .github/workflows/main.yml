@@ -1,0 +1,53 @@
+name: Convert React to APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Project
+        # يقوم ببناء الموقع وتحويله لملفات جاهزة
+        run: npm run build
+
+      - name: Setup Capacitor & Android
+        # يقوم بتثبيت أدوات التحويل وإنشاء مجلد أندرويد
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init PrayerApp com.prayer.times --web-dir=dist
+          npx cap add android
+
+      - name: Build APK
+        # يدخل لمجلد الأندرويد ويقوم ببناء ملف التثبيت
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        # يقوم برفع الملف النهائي لك لتحميله
+        uses: actions/upload-artifact@v3
+        with:
+          name: prayer-app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
