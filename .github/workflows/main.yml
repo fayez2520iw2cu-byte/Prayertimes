@@ -11,15 +11,15 @@ jobs:
 
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -28,26 +28,22 @@ jobs:
         run: npm install
 
       - name: Build Web Project
-        # يقوم ببناء الموقع وتحويله لملفات جاهزة
         run: npm run build
 
       - name: Setup Capacitor & Android
-        # يقوم بتثبيت أدوات التحويل وإنشاء مجلد أندرويد
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init PrayerApp com.prayer.times --web-dir=dist
           npx cap add android
 
       - name: Build APK
-        # يدخل لمجلد الأندرويد ويقوم ببناء ملف التثبيت
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
-        # يقوم برفع الملف النهائي لك لتحميله
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: prayer-app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
